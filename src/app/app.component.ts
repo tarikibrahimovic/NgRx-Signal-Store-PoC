@@ -1,12 +1,22 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {Component, inject, OnInit} from '@angular/core';
+import {TodosStore} from './store/todos.store';
+import {TodosListComponent} from './components/todos-list/todos-list.component';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [TodosListComponent, MatProgressSpinner],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
-  title = 'signal-store-update';
+export class AppComponent implements OnInit{
+  store = inject(TodosStore)
+
+  ngOnInit() {
+    this.loadTodos().then(() => console.log('Todos loaded'));
+  }
+
+  async loadTodos() {
+    await this.store.loadAll();
+  }
 }
